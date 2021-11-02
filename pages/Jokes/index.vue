@@ -1,9 +1,22 @@
 <template>
-  <div>jokes</div>
+  <div>
+    <Joke
+    v-for="joke in jokes"
+    v-bind:key="joke.id"
+    :id="joke.id"
+    :joke="joke.joke"
+    />
+  </div>
 </template>
 
 <script>
+import axios from "axios";
+import Joke from "../../components/Joke.vue"
+
 export default {
+  components: {
+    Joke
+  },
   data() {
     return {
       jokes: [],
@@ -12,10 +25,16 @@ export default {
   async created() {
     const config = {
       headers: {
-        Accept: "applicaton/json",
+        'Accept': 'application/json',
       },
     };
-    const res = await axios.get();
+    try {
+      const res = await axios.get('https://icanhazdadjoke.com/search', config);
+      this.jokes = res.data.results;
+    }
+    catch (err) {
+      console.log(err)
+    }
   },
   head() {
     return {
